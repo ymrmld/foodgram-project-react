@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import MinValueValidator
 
-User = get_user_model() 
+User = get_user_model()
+
 
 class Tag(models.Model):
-    """Модель тегов."""
+    """ Модель тегов."""
+
     name = models.CharField(
         verbose_name='тег',
         max_length=20,
@@ -30,8 +32,10 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Ingredient(models.Model):
-    """Модель ингридиентов."""
+    """ Модель ингридиентов."""
+
     name = models.CharField(
         verbose_name='ингридиент',
         max_length=100,
@@ -49,6 +53,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.measurement_unit}.'
+
 
 class Recipe(models.Model):
     """ Модель рецептов."""
@@ -99,6 +104,7 @@ class Recipe(models.Model):
         verbose_name='дата публикации рецепта',
         auto_now_add=True
     )
+
     class Meta:
         verbose_name = 'рецепт'
         verbose_name_plural = 'рецепты'
@@ -107,8 +113,10 @@ class Recipe(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class IngredientToRecipe(models.Model):
-    """Модель ингридиентов в рецептах."""
+    """ Модель ингридиентов в рецептах."""
+
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
@@ -134,8 +142,10 @@ class IngredientToRecipe(models.Model):
     def __str__(self):
         return f'{self.recipe} - {self.ingredient}'
 
+
 class SelectedRecipe(models.Model):
-    """Модель избранного рецепта."""
+    """ Модель избранного рецепта."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

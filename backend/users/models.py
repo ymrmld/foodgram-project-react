@@ -1,9 +1,10 @@
-from django.contrib.auth.models import AbstractUser 
+from django.contrib.auth.models import AbstractUser
 
-from django.db import models 
+from django.db import models
 
-class User(AbstractUser): 
-    """ Модель для юзера.""" 
+
+class User(AbstractUser):
+    """ Модель для юзера."""
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -13,11 +14,11 @@ class User(AbstractUser):
         blank=False,
         null=False
     )
-    username = models.CharField( 
-        max_length=150, 
-        unique=True, 
-        blank=False, 
-        null=False 
+    username = models.CharField(
+        max_length=150,
+        unique=True,
+        blank=False,
+        null=False
     )
     first_name = models.CharField(
         max_length=150,
@@ -30,15 +31,16 @@ class User(AbstractUser):
         null=False,
     )
 
-    class Meta: 
+    class Meta:
         ordering = ('-id',)
         verbose_name = 'юзер'
         verbose_name_plural = 'юзеры'
 
     def __str__(self):
-        return self.username[:10] 
+        return self.username[:10]
 
-class Subscribe(models.Model): 
+
+class Subscribe(models.Model):
     """ Модель подписок."""
 
     user = models.ForeignKey(
