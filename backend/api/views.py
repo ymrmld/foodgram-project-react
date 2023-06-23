@@ -54,7 +54,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 recipe=recipe
             ).exists():
                 raise exceptions.ValidationError(
-                    {'errors': 'Рецепт уже есть в избранном'}
+                    {'errors': 'рецепт уже в избранном'}
                 )
             SelectedRecipe.objects.create(user=user, recipe=recipe)
             serializer = SubcribesRecipesSerializer(
@@ -107,7 +107,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                 recipe=recipe
             ).exists():
                 raise exceptions.ValidationError(
-                    {'errors': 'Нет в списке покупок'}
+                    {'errors': 'не найдено в списке покупок'}
                 )
             cartlist = get_object_or_404(RecipesCart, user=user, recipe=recipe)
             cartlist.delete()
