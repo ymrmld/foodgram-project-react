@@ -296,7 +296,8 @@ class PasswordSerializer(serializers.Serializer):
                 {'current_password': 'пароль введен неверно!'}
             )
         if (
-            validated_data['current_password'] == validated_data['new_password']
+            validated_data['current_password']
+            == validated_data['new_password']
         ):
             raise serializers.ValidationError(
                 {'new_password': 'введенный пароль совпадает с текущим!'}
