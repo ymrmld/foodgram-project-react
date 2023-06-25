@@ -99,8 +99,8 @@ class UserListSerializer(UserSerializer):
 
         data = self.context.get('request')
         return (
-            (data is None and data.user.is_anonymous)
-            or Subscribe.objects.filter(
+            not (data is None or data.user.is_anonymous)
+            and Subscribe.objects.filter(
                 user=data.user,
                 author=following
             ).exists()
