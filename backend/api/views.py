@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import exceptions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (SAFE_METHODS, AllowAny,
+from rest_framework.permissions import (AllowAny,
                                         IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
@@ -34,14 +34,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """ Вывод списка рецептов."""
 
-        if self.request.method in SAFE_METHODS:
+        if self.request.method == 'GET':
             return RecipesListSerializer
         return RecipeSendSerializer
 
     @action(
         detail=True,
         methods=['post', 'delete'],
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def favorite(self, request, pk=None):
         """ Избранные рецепты."""

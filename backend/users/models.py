@@ -2,33 +2,27 @@ from django.contrib.auth.models import AbstractUser
 
 from django.db import models
 
+LIMIT_SYMBOL_NAME = 15
+
 
 class User(AbstractUser):
     """ Модель для юзера."""
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name',)
     email = models.EmailField(
         max_length=254,
-        unique=True,
-        blank=False,
-        null=False
+        unique=True
     )
     username = models.CharField(
         max_length=150,
-        unique=True,
-        blank=False,
-        null=False
+        unique=True
     )
     first_name = models.CharField(
-        max_length=150,
-        blank=False,
-        null=False,
+        max_length=150
     )
     last_name = models.CharField(
-        max_length=150,
-        blank=False,
-        null=False,
+        max_length=150
     )
 
     class Meta:
@@ -37,7 +31,7 @@ class User(AbstractUser):
         verbose_name_plural = 'юзеры'
 
     def __str__(self):
-        return self.username[:10]
+        return self.username[:LIMIT_SYMBOL_NAME]
 
 
 class Subscribe(models.Model):
@@ -63,3 +57,6 @@ class Subscribe(models.Model):
         )
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
+
+    def __str__(self):
+        return f'{self.user} - {self.author}.'

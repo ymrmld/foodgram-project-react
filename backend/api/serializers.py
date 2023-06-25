@@ -98,12 +98,13 @@ class UserListSerializer(UserSerializer):
         """ Проверка подписки."""
 
         data = self.context.get('request')
-        if data is None or data.user.is_anonymous:
-            return False
-        return Subscribe.objects.filter(
-            user=data.user,
-            author=following
-        ).exists()
+        return (
+            (data is None and data.user.is_anonymous)
+            or Subscribe.objects.filter(
+                user=data.user,
+                author=following
+            ).exists()
+        )
 
     class Meta:
         model = User
@@ -130,17 +131,20 @@ class RecipesListSerializer(serializers.ModelSerializer):
         """ Проверка рецепта в избранном."""
 
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return user.select.filter(recipe=select).exists()
+        return (
+            not (user.is_anonymous)
+            and user.select.filter(recipe=select).exists()
+        )
 
     def get_is_in_shopping_cart(self, recipe):
         """ Проверка рецепта в корзине."""
 
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return user.listingredientuser.filter(recipe=recipe).exists()
+        return (not (user.is_anonymous)
+                and user.listingredientuser.filter(
+                    recipe=recipe
+        ).exists()
+        )
 
     class Meta:
         model = Recipe
@@ -182,6 +186,15 @@ class RecipeSendSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError(
                 'не может быть меньше одного тега.'
             )
+
+        tags = set()
+        for item in value:
+            if item in tags:
+                raise exceptions.ValidationError(
+                    'не может быть одинаковых тегов.'
+                )
+            tags.add(item)
+
         return value
 
     def validate_ingredients(self, value):
