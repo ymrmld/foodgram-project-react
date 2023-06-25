@@ -77,7 +77,7 @@ class Recipe(models.Model):
     image = models.ImageField(
         verbose_name='как выглядит блюдо',
         upload_to='recipes/images/',
-        blank=True,
+        default=None,
         help_text='добавьте фото шедевра',
     )
     text = models.TextField(
@@ -94,6 +94,7 @@ class Recipe(models.Model):
         Tag,
         verbose_name='тег',
         related_name='tags',
+        through='RecipeToTag',
     )
     cooking_time = models.PositiveSmallIntegerField(
         validators=[

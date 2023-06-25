@@ -204,21 +204,23 @@ class RecipeSendSerializer(serializers.ModelSerializer):
             raise exceptions.ValidationError(
                 'не может быть менее одного ингридиента.'
             )
-        ingredients = [item['id'] for item in value]
-        for ingredient in ingredients:
-            if ingredients.count(ingredient) > 1:
+
+        ingredients = set()
+        for item in value:
+            if item['id'] in ingredients:
                 raise exceptions.ValidationError(
-                    'проверьте, нет ли одинаковых ингридиентов'
+                    'не может быть одинаковых ингридиентов.'
                 )
+            ingredients.add(item['id'])
         return value
 
     def create(self, validated_data):
         """ Запись рецепта."""
 
         author = self.context.get('request').user
-        recipe = Recipe.objects.create(author=author, **validated_data)
-        ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
+        recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags)
 
         for ingredient in ingredients:
