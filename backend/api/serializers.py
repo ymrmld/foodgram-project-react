@@ -121,6 +121,7 @@ class UserListSerializer(UserSerializer):
 class RecipesListSerializer(serializers.ModelSerializer):
     author = UserListSerializer()
     ingredients = IngredientToRecipeSerializer(
+        source='recipe',
         many=True
     )
     tags = TagsSerializer(many=True)
@@ -132,7 +133,7 @@ class RecipesListSerializer(serializers.ModelSerializer):
 
         user = self.context.get('request').user
         return (
-            not (user.is_anonymous)
+            not user.is_anonymous
             and user.select.filter(recipe=select).exists()
         )
 
@@ -140,10 +141,11 @@ class RecipesListSerializer(serializers.ModelSerializer):
         """ Проверка рецепта в корзине."""
 
         user = self.context.get('request').user
-        return (not (user.is_anonymous)
-                and user.listingredientuser.filter(
-                    recipe=recipe
-        ).exists()
+        return (
+            not user.is_anonymous
+            and user.listingredientuser.filter(
+                recipe=recipe
+            ).exists()
         )
 
     class Meta:

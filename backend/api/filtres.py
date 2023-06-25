@@ -22,10 +22,10 @@ class RecipesFilter(FilterSet):
         queryset=Tag.objects.all(),
     )
     is_favorited = filters.BooleanFilter(
-        method='selected_filter'
+        method='selected'
     )
     is_in_shopping_cart = filters.BooleanFilter(
-        method='cart_filter'
+        method='cart'
     )
 
     class Meta:
@@ -35,18 +35,18 @@ class RecipesFilter(FilterSet):
             'author',
         )
 
-    def selected_filter(self, queryset, name, value):
+    def selected(self, queryset, name, value):
         """ Фильтр избранного."""
 
         user = self.request.user
         if value and not user.is_anonymous:
-            return queryset.filter(recipe__user=user)
+            return queryset.filter(recipeselect__user=user)
         return queryset
 
-    def cart_filter(self, queryset, name, value):
+    def cart(self, queryset, name, value):
         """ Фильтр покупок."""
 
         user = self.request.user
         if value and not user.is_anonymous:
-            return queryset.filter(recipelist__user=user)
+            return queryset.filter(listrecipe__user=user)
         return queryset
