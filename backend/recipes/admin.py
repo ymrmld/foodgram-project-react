@@ -46,7 +46,7 @@ class RecipesAdmin(admin.ModelAdmin):
 
     @display(description='в избранном!')
     def selected_amount(self, obj):
-        return obj.recipe.count()
+        return obj.recipeselect.count()
 
 
 class TagsAdmin(admin.ModelAdmin):

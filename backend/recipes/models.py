@@ -48,7 +48,7 @@ class Ingredient(models.Model):
         max_length=100
     )
     measurement_unit = models.CharField(
-        verbose_name='Единица измерения ингредиента',
+        verbose_name='единица измерения ингредиента',
         max_length=30
     )
 
@@ -157,7 +157,7 @@ class IngredientToRecipe(models.Model):
         verbose_name_plural = 'связи ингридиентов и рецептов'
 
     def __str__(self):
-        return f'{self.recipe} - {self.ingredient}'
+        return f'{self.recipe} - {self.ingredient} - {self.amount}'
 
 
 class RecipeToTag(models.Model):

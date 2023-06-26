@@ -126,21 +126,23 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if not user.listingredientuser.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         ingredients = IngredientToRecipe.objects.filter(
-            recipe__listrecipe__user=request.user
+            recipe__listrecipe__user=user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
+        ).annotate(
+            amount=Sum('amount')
+        ).order_by('ingredient__name').distinct()
         header = 'Что нужно купить:\n\n'
-        purchases = f'{header}'
-        purchases += '\n'.join([
+        cartlist = f'{header}'
+        cartlist += '\n'.join([
             f'{ingredient["ingredient__name"]}'
             f' - {ingredient["amount"]}'
             f' {ingredient["ingredient__measurement_unit"]}.'
             for ingredient in ingredients
         ])
-        file = 'purchases.txt'
-        response = HttpResponse(purchases, content_type='text/plain')
+        file = 'cartlist.txt'
+        response = HttpResponse(cartlist, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={file}'
         return response
 
