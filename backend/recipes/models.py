@@ -31,6 +31,12 @@ class Tag(models.Model):
         verbose_name='ссылка'
     )
 
+    def lower_tag(self):
+        self.name = self.name.strip().lower()
+        self.slug = self.slug.strip().lower()
+        self.color = self.color.strip().lower()
+        return super().clean()
+
     class Meta:
         verbose_name = 'тег'
         verbose_name_plural = 'теги'

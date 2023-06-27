@@ -24,6 +24,7 @@ class Base64ImageField(serializers.ImageField):
 
 
 class SubcribesRecipesSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Recipe
         fields = (
@@ -35,6 +36,7 @@ class SubcribesRecipesSerializer(serializers.ModelSerializer):
 
 
 class TagsSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Tag
         fields = (
@@ -46,6 +48,7 @@ class TagsSerializer(serializers.ModelSerializer):
 
 
 class IngredientsSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Ingredient
         fields = (
@@ -182,6 +185,10 @@ class RecipeSendSerializer(serializers.ModelSerializer):
                 1,
                 message='время не может быть меньше 1.'
             ),
+            MaxValueValidator(
+                1440,
+                message='время не может быть больше 1 дня.'
+            ),
         )
     )
 
@@ -208,17 +215,31 @@ class RecipeSendSerializer(serializers.ModelSerializer):
 
         if not value:
             raise exceptions.ValidationError(
-                'не может быть менее одного ингридиента.'
+                'не может быть менее одного ингридиента!'
             )
 
         ingredients = set()
         for item in value:
             if item['id'] in ingredients:
                 raise exceptions.ValidationError(
-                    'не может быть одинаковых ингридиентов.'
+                    [{"id": ['не может быть одинаковых ингридиентов!']}]
                 )
             ingredients.add(item['id'])
         return value
+
+    def validate(self, data):
+
+        author = self.context['request'].user
+        name = data['name']
+
+        if Recipe.objects.filter(
+                author=author,
+                name=name,
+        ).exists():
+            raise serializers.ValidationError(
+                'у вас рецепт с таким названием уже существует!'
+            )
+        return data
 
     def create(self, validated_data):
         """ Запись рецепта."""

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-
+from django.core.exceptions import ValidationError
 from django.db import models
 
 LIMIT_SYMBOL_NAME = 15
@@ -41,20 +41,27 @@ class Subscribe(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='subscriber',
-        verbose_name='подписчик'
+        verbose_name='подписчик',
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='subscribing',
-        verbose_name='подписка'
+        verbose_name='подписка',
     )
+
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError(
+                'пользователь не может подписаться на самого себя!'
+            )
 
     class Meta:
         models.UniqueConstraint(
             fields=['user', 'author'],
-            name='unique_follow'
+            name='unique_follow',
         )
+        unique_together = ('user', 'author')
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
 
