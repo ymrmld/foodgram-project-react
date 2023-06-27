@@ -3,7 +3,7 @@ import base64
 from django.contrib.auth.password_validation import validate_password
 from django.core import exceptions as django_exceptions
 from django.core.files.base import ContentFile
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import exceptions, serializers
@@ -78,7 +78,11 @@ class IngredientsToRecipeSerializer(serializers.ModelSerializer):
         validators=(
             MinValueValidator(
                 1,
-                message='не может быть менее одного ингридиента!'
+                message='не может быть менее одного ингредиента!'
+            ),
+            MaxValueValidator(
+                32000,
+                message='слишком большое количество ингредиента!'
             ),
         )
     )
