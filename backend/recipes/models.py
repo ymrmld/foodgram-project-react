@@ -31,10 +31,10 @@ class Tag(models.Model):
         verbose_name='ссылка'
     )
 
-    def lower_tag(self):
-        self.name = self.name.strip().lower()
-        self.slug = self.slug.strip().lower()
-        self.color = self.color.strip().lower()
+    def clean(self):
+        self.name = self.name.lower()
+        self.slug = self.slug.lower()
+        self.color = self.color.lower()
         return super().clean()
 
     class Meta:
